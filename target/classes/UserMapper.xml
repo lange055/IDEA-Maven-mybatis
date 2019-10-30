@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zgl.mapper.UserMapper">
+
+    <select id="selectByAll" parameterType="com.zgl.model.User" resultType="com.zgl.model.User">
+        select * from user
+        <where>
+            <if test="id != null and id != ''"></if>
+                and id = #{id}
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUser" parameterType="com.zgl.model.User">
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password}
+            </if>
+        </set>
+            where id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.util.List">
+        delete from user
+        <where>
+           <choose>
+                <when test="list != null and list.size()>0">
+                    <foreach collection="list" open="id in(" close=")" separator="," item="id">
+                        #{id}
+                    </foreach>
+                </when>
+                    <otherwise>
+                        1=2
+                    </otherwise>
+           </choose>
+        </where>
+    </delete>
+
+    <insert id="addList" parameterType="java.util.List">
+        insert  into user (username,password) values
+        <if test="list != null and list.size()>0">
+            <foreach collection="list" separator="," item="user">
+
+                (#{user.username},#{user.password})
+            </foreach>
+        </if>
+    </insert>
+
+
+</mapper>
